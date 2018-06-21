@@ -1,0 +1,157 @@
+<div ng-show="$parent.isShowSensorSetDialog">
+    <div class="dimmed" ng-show="$parent.isShowSensorSetDialog"></div>
+
+
+    <!-- [D] 센서 이벤트 팝업 -->
+    <div style="position:static;background:none;" class="modal_dialog ly_info_data is_align_top" ng-show="$parent.isShowSensorSetDialog">
+        <div ng-style="{'top': dialogTop + 'px'}" class="ly_pop">
+            <!-- [D] 최근 온습도 정보 버튼 클릭시 대체 노출 -->
+            <div class="ly_wrap graph_data_wrap">
+                <div class="ly_tit_wrap">
+                    <a ng-click="showTempHumidDialog(false)" class="btn_prev"></a>
+                    <h4 class="ly_tit">{{selectSensor.sensorName}}</h4>
+                </div>
+                <div class="cross_line"></div>
+                <div class="ly_info_wrap">
+                    <span class="sensor_status">열림</span>
+                    <span class="last_status_time">오늘 09:12</span>
+                    <span class="sensor_event_filter"></span>
+                    <span class="sensor_set_info"></span>
+                </div>
+                <div class="ly_con" style="padding-top:8px;">
+                    <div class="date_select_wrap">
+                        <span class="select_day">{{selectDate | dateFormat: "YY.MM.DD (ddd)"}}</span>
+                        <a ng-click="moveNextDate(true)" class="btn btn_prev"></a>
+                        <a ng-click="moveNextDate(false)" class="btn btn_next"></a>
+                    </div>
+                    <div style="background:white;margin-top:1px;" class="graph_wrap">
+                        <div class="sensor_evt_lst_area" style="width:484px; height:248px; overflow-y:auto; position:relative;">
+                            <ol ng-show="true" class="lst_timeline">
+                                <li style="cursor:pointer;" ng-class="{'time_pointer' : true, 'time_hour_item': true}">
+                                    <span>12:00</span>
+                                </li>
+                                <li style="cursor:pointer;" ng-class="{'time_pointer' : true, 'time_hour_item': true}">
+                                    <span>13:00</span>
+                                </li>
+                                <li style="cursor:pointer;" ng-class="{'time_pointer' : true, 'time_hour_item': false}">
+                                    <span>13:00</span>
+                                </li>
+                                <li style="cursor:pointer;" ng-class="{'time_pointer' : true, 'time_hour_item': false}">
+                                    <span>13:00</span>
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+                <button ng-click="closeSensorDetail()" type="button" class="sp btn_close"></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- [D] 센서 정보 팝업 -->
+    <div style="position:static;" class="modal_dialog ly_info_data is_align_top" ng-show="false">  <!--ng-show="$parent.isShowSensorSetDialog"-->
+        <div ng-style="{'top': dialogTop + 'px'}" class="ly_pop">
+            <div class="ly_wrap">
+                <div class="ly_tit_wrap">
+                    <h4 class="ly_tit">{{'STR_SENSOR_DLG1' | translate}}</h4>
+                </div>
+                <div class="ly_con">
+                    <dl class="lst_info">
+                        <dt class="h_txt">{{'STR_SENSOR_DLG2' | translate}}</dt>
+                        <dd ng-if="(selectSensor.sensorType === 'TEMP_HUMID' || selectSensor.sensorType === 'TEMP' || selectSensor.sensorType === 'HUMID')" class="desc_txt">
+                            {{selectSensor.sensorName}}
+                            <span class="link_wrap">
+								<a ng-click="showTempHumidDialog(true)" class="btn_link">{{'STR_SENSOR_DLG3' | translate}}</a>
+							</span>
+                        </dd>
+                        <dd ng-if="(selectSensor.sensorType != 'TEMP_HUMID' && selectSensor.sensorType != 'TEMP' && selectSensor.sensorType != 'HUMID')" class="desc_txt">{{selectSensor.sensorName}}</dd>
+                        <dt class="h_txt">{{'STR_DOORLOCK_DLG3' | translate}}</dt>
+                        <dd class="desc_txt">{{selectSensor.serialNo}}</dd>
+                        <dt class="h_txt">{{'STR_DOORLOCK_DLG4' | translate}}</dt>
+                        <dd class="desc_txt">{{selectSensor.shopName}}</dd>
+                        <dt class="h_txt">{{'STR_DOORLOCK_DLG5' | translate}}</dt>
+                        <dd class="desc_txt">{{selectSensor.controllerName}}</dd>
+                        <dt class="h_txt">{{'STR_SENSOR_DLG4' | translate}}</dt>
+                        <dd ng-if="(selectSensor.sensorType === 'TEMP_HUMID' || selectSensor.sensorType === 'TEMP' || selectSensor.sensorType === 'HUMID')" class="desc_txt">
+							<span class="ico_battery">
+								<span class="progressbar_area">
+									<span ng-class="{bar: true, is_low: selectSensor.batteryIcon == 'LOW'}" ng-style="{'width': selectSensor.batteryStatus}"></span><!-- [D]bar의 width에 배터리 잔량 수치 적용 필요, 20%이하인 경우 bar에 is_low 클래스 추가 -->
+								</span>
+							</span>
+                            <span class="battery_txt">{{selectSensor.batteryIcon == 'LOW' ? selectSensor.batteryIcon : selectSensor.batteryStatus}}</span>
+                        </dd>
+                        <dd ng-if="(selectSensor.sensorType != 'TEMP_HUMID' && selectSensor.sensorType != 'TEMP' && selectSensor.sensorType != 'HUMID')" class="desc_txt">
+							<span class="ico_battery">
+								<span class="progressbar_area">
+									<span ng-class="{bar: true, is_low: selectSensor.batteryIcon == 'LOW'}" ng-style="{'width': selectSensor.batteryStatus}"></span><!-- [D]bar의 width에 배터리 잔량 수치 적용 필요, 20%이하인 경우 bar에 is_low 클래스 추가 -->
+								</span>
+							</span>
+                            <span class="battery_txt">{{selectSensor.batteryIcon == 'LOW' ? selectSensor.batteryIcon : selectSensor.batteryStatus}}</span>
+                        </dd>
+                    </dl>
+                    <div class="camera_wrap">
+                        <span class="h_txt">{{'STR_DOORLOCK_DLG6' | translate}}</span>
+                        <a ng-click="goCameraDetail()" class="btn_link">
+								<span class="cam_area">
+									<img style="width:150px;height:100px;" ng-src="{{(cameraInfo.recorderType == 'nvr' ? 'http://' : protocol) + cameraInfo.thumbnailPath}}" onerror="this.src='/resources/images/img_camera_fail.png'" alt="">
+								</span>
+                            <em class="tit_item">{{cameraInfo.labelName}}</em>
+                        </a>
+                        <!--a ng-click="showCameraSelectDialog(true)" class="btn_camera_change">{{'STR_DOORLOCK_DLG7' | translate}}</a-->
+                    </div>
+                </div>
+                <button ng-click="closeSensorDetail()" type="button" class="sp btn_close"></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- [D] 카메라 선택 팝업 -->
+    <div style="position:static;" class="modal_dialog ly_store_main ly_select_camara" ng-show="isShowCameraSelectDialog">
+        <div ng-style="{'top': dialogTop + 'px'}" class="ly_pop">
+            <div class="ly_wrap">
+                <div class="ly_tit_wrap"><h4 class="ly_tit">{{'STR_DOORLOCK_DLG9' | translate}}</h4></div>
+                <div class="ly_con">
+                    <ul class="lst_select">
+                        <li class="select_item" ng-repeat="supportCamera in sensorSupportCameras">
+                            <div class="radio_area">
+								<span class="inp_radio">
+									<input ng-click="changeMonitorCamera(supportCamera.cameraId)" type="radio" id="{{'rdo_' + $index}}" name="pay" class="inp_rdo" checked>
+									<label for="{{'rdo_' + $index}}" class="inp_label">{{supportCamera.labelName}}</label>
+								</span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <button ng-click="showCameraSelectDialog(false)" type="button" class="sp btn_close"></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- [D] 온습도센서 팝업 -->
+    <div style="position:static;background:none;" class="modal_dialog ly_info_data is_align_top" ng-show="isShowTempHumidDialog">
+        <div ng-style="{'top': dialogTop + 'px'}" class="ly_pop">
+            <!-- [D] 최근 온습도 정보 버튼 클릭시 대체 노출 -->
+            <div class="ly_wrap graph_data_wrap">
+                <div class="ly_tit_wrap">
+                    <a ng-click="showTempHumidDialog(false)" class="btn_prev"></a>
+                    <h4 class="ly_tit">{{selectSensor.sensorName}}</h4>
+                </div>
+                <div class="ly_con">
+                    <div class="date_select_wrap">
+                        <span class="select_day">{{selectDate | dateFormat: "YY.MM.DD (ddd)"}}</span>
+                        <a ng-click="moveNextDate(true)" class="btn btn_prev"></a>
+                        <a ng-click="moveNextDate(false)" class="btn btn_next"></a>
+                    </div>
+                    <div style="background:white;" class="graph_wrap">
+                        <div style="width:484px; height:248px;" id="tui_temp"></div>
+                    </div>
+                    <div style="background:white;" class="graph_wrap">
+                        <div style="width:484px; height:248px;" id="tui_humid"></div>
+                    </div>
+                </div>
+                <button ng-click="closeSensorDetail()" type="button" class="sp btn_close"></button>
+            </div>
+        </div>
+    </div>
+
+</div>
